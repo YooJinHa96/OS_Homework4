@@ -3,10 +3,9 @@
 
 #include "Thread.h"
 
-int	RunScheduler( void );
-void	__ContextSwitch(int curpid, int newpid);
-
-Thread* pCurrentThread;
+int RunScheduler(void);
+void __ContextSwitch(int curpid, int newpid);
+void sig_handler(int sign);
+Thread *pCurrentThread;
 
 #endif
-
