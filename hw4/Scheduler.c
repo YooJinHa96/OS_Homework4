@@ -1,11 +1,15 @@
 #include "Scheduler.h"
 #include "Init.h"
+#include "Myhw4.h"
+#include <stdio.h>
 #include "Thread.h"
 void sig_handler(int sign) {
+
     if (sign == SIGALRM) {
         int count = 0;
         int t_priority;
         Thread *newThread;
+        Thread *oldThread;
         // Readyqueue empty check
         for (int i = 0; i < MAX_READYQUEUE_NUM; i++) {
             if (pReadyQueueEnt[i].queueCount == 0) {
@@ -23,8 +27,10 @@ void sig_handler(int sign) {
                     InsertReadyQueueToTail(pCurrentThread,
                                            pCurrentThread->priority);
                     pCurrentThread->status = THREAD_STATUS_READY;
-                    __ContextSwitch(pCurrentThread->pid, newThread->pid);
-                    pCurrentThread = newThread;
+                    oldThread=pCurrentThread;
+                    pCurrentThread=newThread;
+                    __ContextSwitch(oldThread->pid, newThread->pid);
+ 
                     break;
                 }
             }
@@ -37,8 +43,9 @@ int RunScheduler(void) {
     int count = 0;
     int t_priority;
     Thread *newThread;
-    signal(SIGALRM, sig_handler);
+    Thread *oldThread;
 
+    signal(SIGALRM, sig_handler);
     // Readyqueue empty check
     for (int i = 0; i < MAX_READYQUEUE_NUM; i++) {
         if (pReadyQueueEnt[i].queueCount == 0) {
@@ -52,6 +59,7 @@ int RunScheduler(void) {
             GetThreadFromReadyqueueHead(0); // Assume Testcase prirority = 0
         kill(pCurrentThread->pid, SIGCONT);
         // alarm(TIMESLICE);
+      
     } else if (count < MAX_READYQUEUE_NUM) {
 
         for (int i = 0; i < MAX_READYQUEUE_NUM; i++) {
@@ -62,12 +70,14 @@ int RunScheduler(void) {
                 InsertReadyQueueToTail(pCurrentThread,
                                        pCurrentThread->priority);
                 pCurrentThread->status = THREAD_STATUS_READY;
-                __ContextSwitch(pCurrentThread->pid, newThread->pid);
-                pCurrentThread = newThread;
+                oldThread=pCurrentThread;
+                pCurrentThread=newThread;
+                __ContextSwitch(oldThread->pid, newThread->pid);
                 break;
             }
         }
     }
+     
     alarm(TIMESLICE);
 }
 

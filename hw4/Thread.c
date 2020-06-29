@@ -1,6 +1,8 @@
 #include "Thread.h"
 #include "Init.h"
 #include "Scheduler.h"
+#include "Myhw4.h"
+#include <stdio.h>
 
 int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
                   void *(*start_routine)(void *), void *arg) {
@@ -9,7 +11,6 @@ int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
     void *pStack;
     int pr = priority;
     pStack = malloc(STACK_SIZE);
-
     pid = clone((void *)start_routine, (void *)pStack + STACK_SIZE, flags, arg);
     kill(pid, SIGSTOP);
 
@@ -32,6 +33,7 @@ int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
             pThreadTblEnt[*thread].pThread->priority) {
             InsertReadyQueueToTail(pThreadTblEnt[*thread].pThread, priority);
             pThreadTblEnt[*thread].pThread->status = THREAD_STATUS_READY;
+            
         } else {
             InsertReadyQueueToTail(pCurrentThread, pCurrentThread->priority);
             pCurrentThread->status = THREAD_STATUS_READY;
@@ -41,6 +43,7 @@ int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
             pCurrentThread = pThreadTblEnt[*thread].pThread;
         }
     }
+   
     return *thread;
 }
 
@@ -48,9 +51,22 @@ int thread_suspend(thread_t tid) {}
 
 int thread_cancel(thread_t tid) {}
 
-int thread_resume(thread_t tid) {}
+int thread_resume(thread_t tid) {
+    
+}
 
-thread_t thread_self() {}
+thread_t thread_self() {
+    pid_t pid = getpid();
+    thread_t tid;
+    for (int i = 0; MAX_THREAD_NUM; i++)
+    {
+        if (pThreadTblEnt[i].pThread->pid == pid)
+        {
+            tid = i;
+            return tid;
+        }
+    }
+}
 
 int thread_join(thread_t tid, void **retval) {}
 
