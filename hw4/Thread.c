@@ -1,7 +1,7 @@
 #include "Thread.h"
 #include "Init.h"
-#include "Scheduler.h"
 #include "Myhw4.h"
+#include "Scheduler.h"
 #include <stdio.h>
 
 int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
@@ -25,6 +25,7 @@ int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
     }
 
     if (pCurrentThread == NULL) { // Testcase Thread create
+        printf("thread testcase creat\n");
         InsertReadyQueueToTail(pThreadTblEnt[*thread].pThread, priority);
         pThreadTblEnt[*thread].pThread->status = THREAD_STATUS_READY;
     } else {
@@ -32,7 +33,7 @@ int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
             pThreadTblEnt[*thread].pThread->priority) {
             InsertReadyQueueToTail(pThreadTblEnt[*thread].pThread, priority);
             pThreadTblEnt[*thread].pThread->status = THREAD_STATUS_READY;
-            
+
         } else {
             InsertReadyQueueToTail(pCurrentThread, pCurrentThread->priority);
             pCurrentThread->status = THREAD_STATUS_READY;
@@ -42,7 +43,7 @@ int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
             pCurrentThread = pThreadTblEnt[*thread].pThread;
         }
     }
-   
+
     return *thread;
 }
 
@@ -50,17 +51,13 @@ int thread_suspend(thread_t tid) {}
 
 int thread_cancel(thread_t tid) {}
 
-int thread_resume(thread_t tid) {
-    
-}
+int thread_resume(thread_t tid) {}
 
 thread_t thread_self() {
     pid_t pid = getpid();
     thread_t tid;
-    for (int i = 0; MAX_THREAD_NUM; i++)
-    {
-        if (pThreadTblEnt[i].pThread->pid == pid)
-        {
+    for (int i = 0; MAX_THREAD_NUM; i++) {
+        if (pThreadTblEnt[i].pThread->pid == pid) {
             tid = i;
             return tid;
         }
