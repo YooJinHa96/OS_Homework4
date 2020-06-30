@@ -23,14 +23,14 @@ int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
             break;
         }
     }
-
     if (pCurrentThread == NULL) { // Testcase Thread create
-        printf("thread testcase creat\n");
+
         InsertReadyQueueToTail(pThreadTblEnt[*thread].pThread, priority);
         pThreadTblEnt[*thread].pThread->status = THREAD_STATUS_READY;
     } else {
         if (pCurrentThread->priority <=
             pThreadTblEnt[*thread].pThread->priority) {
+
             InsertReadyQueueToTail(pThreadTblEnt[*thread].pThread, priority);
             pThreadTblEnt[*thread].pThread->status = THREAD_STATUS_READY;
 
@@ -69,7 +69,8 @@ int thread_join(thread_t tid, void **retval) {}
 int thread_exit(void *retval) {
 
     Thread *thread = pCurrentThread;
-    thread->exitCode = *(int *)retval;
+
+    // thread->exitCode = *(int *)retval;
 
     Thread *newThread;
 
@@ -77,18 +78,17 @@ int thread_exit(void *retval) {
 
     thread->status = THREAD_STATUS_ZOMBIE;
 
-    for (int i = 0; i < MAX_READYQUEUE_NUM; i++)
-    {
-        if (pReadyQueueEnt[i].queueCount != 0)
-        {
+    for (int i = 0; i < MAX_READYQUEUE_NUM; i++) {
+        if (pReadyQueueEnt[i].queueCount != 0) {
 
             newThread = GetThreadFromReadyqueueHead(i);
 
             DeleteObject(newThread);
 
             newThread->status = THREAD_STATUS_RUN;
-            __ContextSwitch(0, newThread->pid);
             pCurrentThread = newThread;
+            __ContextSwitch(0, newThread->pid);
+
             exit(1);
             break;
         }

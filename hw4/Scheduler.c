@@ -10,7 +10,7 @@ void sigint_handler(int signo) { alarm(2); }
 void sig_handler(int sign) {
 
     if (sign == SIGALRM) {
-        printf("alarm arrive !!\n");
+
         int count = 0;
         int t_priority;
         Thread *newThread;
@@ -34,7 +34,7 @@ void sig_handler(int sign) {
                     pCurrentThread->status = THREAD_STATUS_READY;
                     oldThread = pCurrentThread;
                     pCurrentThread = newThread;
-                    printf("alarm sds !!\n");
+
                     __ContextSwitch(oldThread->pid, newThread->pid);
 
                     break;
@@ -61,6 +61,7 @@ int RunScheduler(void) {
     if (count == MAX_READYQUEUE_NUM) {
         // alarm(TIMESLICE);
     } else if (pCurrentThread == NULL) { // thread test case start
+
         pCurrentThread =
             GetThreadFromReadyqueueHead(0); // Assume Testcase prirority = 0
         kill(pCurrentThread->pid, SIGCONT);
@@ -88,10 +89,10 @@ int RunScheduler(void) {
 }
 
 void __ContextSwitch(int curpid, int newpid) {
-   if (curpid != 0)
-    {
+    kill(newpid, SIGCONT);
+    if (curpid != 0) {
         kill(curpid, SIGSTOP);
     }
-    kill(newpid, SIGCONT);
+
     // pCurrentThead = pThreadTbEnt[newpid].pThread;
 }
