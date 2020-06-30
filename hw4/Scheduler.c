@@ -88,8 +88,10 @@ int RunScheduler(void) {
 }
 
 void __ContextSwitch(int curpid, int newpid) {
-    kill(curpid, SIGSTOP);
+   if (curpid != 0)
+    {
+        kill(curpid, SIGSTOP);
+    }
     kill(newpid, SIGCONT);
-
     // pCurrentThead = pThreadTbEnt[newpid].pThread;
 }

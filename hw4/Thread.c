@@ -66,4 +66,32 @@ thread_t thread_self() {
 
 int thread_join(thread_t tid, void **retval) {}
 
-int thread_exit(void *retval) {}
+int thread_exit(void *retval) {
+
+    Thread *thread = pCurrentThread;
+    thread->exitCode = *(int *)retval;
+
+    Thread *newThread;
+
+    InsertObjectIntoObjFreeList(thread);
+
+    thread->status = THREAD_STATUS_ZOMBIE;
+
+    for (int i = 0; i < MAX_READYQUEUE_NUM; i++)
+    {
+        if (pReadyQueueEnt[i].queueCount != 0)
+        {
+
+            newThread = GetThreadFromReadyqueueHead(i);
+
+            DeleteObject(newThread);
+
+            newThread->status = THREAD_STATUS_RUN;
+            __ContextSwitch(0, newThread->pid);
+            pCurrentThread = newThread;
+            exit(1);
+            break;
+        }
+    }
+    return -1;
+}
