@@ -69,6 +69,7 @@ ssize_t pmq_receive(pmqd_t mqd, char *msg_ptr, size_t msg_len, unsigned int *msg
 {
 
     int len = -1;
+ 
     if (qcbTblEntry[mqd].bUsed == 0)
     {
         return len;
@@ -109,14 +110,15 @@ ssize_t pmq_receive(pmqd_t mqd, char *msg_ptr, size_t msg_len, unsigned int *msg
                 if (pReadyQueueEnt[i].queueCount != 0)
                 {
                 back:
+                   
                     t_priority = i;
                     newThread = GetThreadFromReadyqueueHead(t_priority);
                     newThread->status = THREAD_STATUS_RUN;
                     InsertWaitingQueueToTail(mqd, pCurrentThread);
                     oldThread = pCurrentThread;
                     pCurrentThread = newThread;
-                    __ContextSwitch(oldThread->pid, newThread->pid);
 
+                    __ContextSwitch(oldThread->pid, newThread->pid);
                     //stop -> start receive -> send -> receive
                     if (qcbTblEntry[mqd].pQcb->pMsgHead != NULL)
                     {

@@ -3,6 +3,7 @@
 #include "Thread.h"
 #include "MsgQueue.h"
 #include "Scheduler.h"
+#include <unistd.h>
 
 void InsertMessageQueueToTail(pmqd_t mqdm, Message *msg, int priority);
 Message *GetMessageQueueToHead(pmqd_t mqdm);

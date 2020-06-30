@@ -5,15 +5,18 @@
 #include "Scheduler.h"
 #include "Thread.h"
 #include "MsgQueue.h"
-
+#include "Myhw4.h"
 #include "TestCase1.h"
 #include "TestCase2.h"
 #include "TestCase3.h"
 #include "TestCase4.h"
 
+
+
+
+
 int main(int argc, char* argv[]){
-       printf("chekck");
-	   fflush(stdout);
+ 
 	int TcNum;
 	thread_t tid1, tid2, tid3, tid4;
 
@@ -41,10 +44,12 @@ int main(int argc, char* argv[]){
 			thread_create(&tid4,NULL,0,(void*)TestCase4,0);
 			break;
 	}
+	
+
 	RunScheduler();
+	while(1){
 
-
-	while(1){}
+	}
 	return 0;
 }
 

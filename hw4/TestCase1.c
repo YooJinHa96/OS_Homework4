@@ -5,7 +5,6 @@ void* Tc1ThreadSender(void* param)
 	pmqd_t mq,pmq;
 	char msg[MAX_MSG_LEN];
 	int i;
-
 	mq=pmq_open("mq2",O_CREAT,O_RDWR,NULL);
 	pmq=pmq_open("mq1",O_CREAT,O_RDWR,NULL);
 
@@ -55,11 +54,10 @@ void TestCase1(void)
 	pmqd_t mq;
 	char msg[MAX_MSG_LEN];
 	unsigned int i;
-	printf("mq1 aftrse");
+
 	mq=pmq_open("mq1",O_CREAT,O_RDWR,NULL);
 
 	thread_create(&tid[0], NULL, 1, (void*)Tc1ThreadSender,0);
-
 	memset(msg,0,MAX_MSG_LEN);
 	pmq_receive(mq,msg,MAX_MSG_LEN,&i);
 	printf("%s\n",msg);

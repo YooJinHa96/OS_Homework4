@@ -13,7 +13,6 @@ int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
     pStack = malloc(STACK_SIZE);
     pid = clone((void *)start_routine, (void *)pStack + STACK_SIZE, flags, arg);
     kill(pid, SIGSTOP);
-
     for (int i = 0; i < MAX_THREAD_NUM; i++) {
         if (!pThreadTblEnt[i].bUsed) {
             *thread = i;
