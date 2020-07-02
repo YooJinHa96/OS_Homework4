@@ -1,7 +1,5 @@
 #include "MsgQueue.h"
 #include "Myhw4.h"
-#include <stdio.h>
-#include <string.h>
 pmqd_t pmq_open(const char *name, int flags, mode_t perm, pmq_attr *attr) {
     int index = 0;
     for (int i = 0; i < MAX_QCB_NUM; i++) { // Message queue check
@@ -35,6 +33,18 @@ int pmq_close(pmqd_t mqd) {
         return -1;
     } else {
         qcbTblEntry[mqd].openCount--;
+        if (qcbTblEntry[mqd].openCount == 0) {
+            if (qcbTblEntry[mqd].pQcb->pMsgHead == NULL) {
+                qcbTblEntry[mqd].bUsed = 0;
+                qcbTblEntry[mqd].mode = 0;
+                memset(qcbTblEntry[mqd].name, 0, PMQ_NANE_LEN_MAX);
+                free(qcbTblEntry[mqd].pQcb);
+                qcbTblEntry[mqd].pQcb = NULL;
+
+            } else {
+                return 0;
+            }
+        }
         return 0;
     }
 }
@@ -72,6 +82,7 @@ ssize_t pmq_receive(pmqd_t mqd, char *msg_ptr, size_t msg_len,
         free(p);
         return len;
     } else { // message x block status
+    back:
         pCurrentThread->status = THREAD_STATUS_WAIT;
 
         int count = 0;
@@ -89,7 +100,7 @@ ssize_t pmq_receive(pmqd_t mqd, char *msg_ptr, size_t msg_len,
 
             for (int i = 0; i < MAX_READYQUEUE_NUM; i++) {
                 if (pReadyQueueEnt[i].queueCount != 0) {
-                back:
+
                     t_priority = i;
                     newThread = GetThreadFromReadyqueueHead(t_priority);
                     newThread->status = THREAD_STATUS_RUN;

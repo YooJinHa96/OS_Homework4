@@ -2,9 +2,6 @@
 #include "Init.h"
 #include "Myhw4.h"
 #include "Thread.h"
-#include <signal.h>
-#include <stdio.h>
-#include <unistd.h>
 int counter = 0;
 void sigint_handler(int signo) { alarm(2); }
 void sig_handler(int sign) {

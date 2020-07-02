@@ -2,7 +2,6 @@
 #include "Init.h"
 #include "Myhw4.h"
 #include "Scheduler.h"
-#include <stdio.h>
 
 int thread_create(thread_t *thread, thread_attr_t *attr, int priority,
                   void *(*start_routine)(void *), void *arg) {
