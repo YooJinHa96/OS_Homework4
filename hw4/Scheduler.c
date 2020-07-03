@@ -91,5 +91,5 @@ void __ContextSwitch(int curpid, int newpid) {
         kill(curpid, SIGSTOP);
     }
 
-    // pCurrentThead = pThreadTbEnt[newpid].pThread;
+  
 }
